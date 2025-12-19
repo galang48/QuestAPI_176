@@ -1,45 +1,39 @@
 package com.example.questapi.uicontroller
 
-import com.example.questapi.api.service.ServiceApiSiswa
-import com.example.questapi.repositori.NetworkRepositoryDataSiswa
-import com.example.questapi.repositori.RepositoryDataSiswa
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.questapi.uicontroller.route.DestinasiEntry
+import com.example.questapi.uicontroller.route.DestinasiHome
+import com.example.questapi.view.EntrySiswaScreen
+import com.example.questapi.view.HomeScreen
 
-class DefaultContainerApp : ContainerApp{
-    private val baseurl = "http://10.0.2.2/umyTI/"
+@Composable
+fun DataSiswaApp(navController: NavHostController = rememberNavController(),
+                 modifier: Modifier
+){
+    HostNavigasi(navController = navController)
+}
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = true
-        isLenient = true
-    }
-
-    val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
-    val klien = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .build()
-
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(baseurl)
-        .addConverterFactory(
-            json.asConverterFactory("application/json".toMediaType())
-        )
-        .client(klien)
-        .build()
-
-    private val retrofitService : ServiceApiSiswa by lazy {
-        retrofit.create(ServiceApiSiswa::class.java)
-    }
-
-    override val repositoryDataSiswa: RepositoryDataSiswa by lazy {
-        NetworkRepositoryDataSiswa(retrofitService)
+@Composable
+fun HostNavigasi(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+){
+    NavHost(navController = navController, startDestination = DestinasiHome.route,
+        modifier = Modifier){
+        composable(DestinasiHome.route) {
+            HomeScreen(navigateToItemEntry = { navController.navigate (DestinasiEntry.route) },
+                navigateToItemUpdate = {
+//                    navController.navigate("${DestinasiDetail.route}/${it}")
+                })
+        }
+        composable(DestinasiEntry.route) {
+            EntrySiswaScreen(navigateBack = { navController.navigate(DestinasiHome
+                .route) })
+        }
     }
 }
