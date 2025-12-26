@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -29,30 +30,28 @@ import com.example.questapi.uicontroller.route.DestinasiEntry
 import com.example.questapi.viewmodel.EntryViewModel
 import com.example.questapi.viewmodel.provider.ProviderViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.material3.HorizontalDivider
 
+@Suppress("ktlint:standard:function-naming")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntrySiswaScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: EntryViewModel = viewModel(factory = ProviderViewModel.Factory)
+    viewModel: EntryViewModel = viewModel(factory = ProviderViewModel.Factory),
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    Scaffold (
+    Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-
         topBar = {
             SiswaTopAppBar(
                 title = stringResource(DestinasiEntry.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
-
-        }) { innerPadding ->
+        },
+    ) { innerPadding ->
 
         EntrySiswaBody(
             uiStateSiswa = viewModel.uiStateSiswa,
@@ -63,95 +62,122 @@ fun EntrySiswaScreen(
                     navigateBack()
                 }
             },
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth(),
         )
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun EntrySiswaBody(
     uiStateSiswa: UiStateSiswa,
     onSiswaValueChange: (DetailSiswa) -> Unit,
     onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen
-            .padding_large)),
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium
-        ))
+        verticalArrangement =
+            Arrangement.spacedBy(
+                dimensionResource(
+                    id =
+                        R.dimen
+                            .padding_large,
+                ),
+            ),
+        modifier =
+            modifier.padding(
+                dimensionResource(id = R.dimen.padding_medium),
+            ),
     ) {
         FormTambahSiswa(
             detailSiswa = uiStateSiswa.detailSiswa,
             onValueChange = onSiswaValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         Button(
             onClick = onSaveClick,
             enabled = uiStateSiswa.isEntryValid,
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(stringResource(R.string.btn_submit))
         }
     }
 }
 
+@Suppress("ktlint:standard:function-naming")
 @Composable
 fun FormTambahSiswa(
     detailSiswa: DetailSiswa,
     modifier: Modifier = Modifier,
     onValueChange: (DetailSiswa) -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
-
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen
-            .padding_medium))
+        verticalArrangement =
+            Arrangement.spacedBy(
+                dimensionResource(
+                    id =
+                        R.dimen
+                            .padding_medium,
+                ),
+            ),
     ) {
-
         OutlinedTextField(
             value = detailSiswa.nama,
-            onValueChange = {onValueChange(detailSiswa.copy(nama=it)) },
+            onValueChange = { onValueChange(detailSiswa.copy(nama = it)) },
             label = { Text(stringResource(R.string.nama)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
         )
         OutlinedTextField(
             value = detailSiswa.alamat,
-            onValueChange = {onValueChange(detailSiswa.copy(alamat=it))},
+            onValueChange = { onValueChange(detailSiswa.copy(alamat = it)) },
             label = { Text(stringResource(R.string.alamat)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
         )
         OutlinedTextField(
             value = detailSiswa.telpon,
-            onValueChange = {onValueChange(detailSiswa.copy(telpon = it))},
+            onValueChange = { onValueChange(detailSiswa.copy(telpon = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(text = stringResource(R.string.telpon)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
         )
 
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_field),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen
-                    .padding_medium))
+                modifier =
+                    Modifier.padding(
+                        start =
+                            dimensionResource(
+                                id =
+                                    R.dimen
+                                        .padding_medium,
+                            ),
+                    ),
             )
         }
         HorizontalDivider(
             thickness = dimensionResource(R.dimen.thickness_divider),
-            modifier = Modifier.padding(bottom = dimensionResource(R.dimen
-                .padding_medium))
+            modifier =
+                Modifier.padding(
+                    bottom =
+                        dimensionResource(
+                            R.dimen
+                                .padding_medium,
+                        ),
+                ),
         )
     }
 }
