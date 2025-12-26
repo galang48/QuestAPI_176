@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.questapi.model.data.UiStateSiswa
+import com.example.questapi.model.data.toUiStateSiswa
 import com.example.questapi.repositori.RepositoryDataSiswa
 import com.example.questapi.uicontroller.route.DestinasiDetail
+import kotlinx.coroutines.launch
 
 class EditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -17,3 +20,12 @@ class EditViewModel(
         private set
 
     private val idSiswa: Int = checkNotNull(savedStateHandle[DestinasiDetail.itemIdArg])
+
+    init {
+        viewModelScope.launch {
+            uiStateSiswa =
+                repositoryDataSiswa
+                    .getSatuSiswa(idSiswa)
+                    .toUiStateSiswa(true)
+        }
+    }
